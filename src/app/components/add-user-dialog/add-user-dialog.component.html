@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>Add New User</h1>
+<div class="mat-content" mat-dialog-content>
+  <p>Enter new user credentials</p>
+  <form [formGroup]="addUserForm">
+    <mat-form-field appearance="fill">
+      <mat-label>Name</mat-label>
+      <input matInput type="text" formControlName="name">
+      <mat-error>At least need 2 chars</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" formControlName="email">
+      <mat-error>Template: xxx@xxx.xxx</mat-error>
+    </mat-form-field>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button [mat-dialog-close] mat-button>Cancel</button>
+  <button [mat-dialog-close]="addUserForm.value" [disabled]="!addUserForm.valid" cdkFocusInitial mat-button>Add</button>
+</div>

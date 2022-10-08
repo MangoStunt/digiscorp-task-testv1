@@ -1,0 +1,23 @@
+<mat-tab-group>
+  <mat-tab label="User List">
+    <app-user-list
+      [searchString$]="searchInputValue$"
+      (usersListSelectedEvent)="storeOldUsers($event)"
+    ></app-user-list>
+
+    <div class="search-field_wrapper">
+      <mat-form-field>
+        <mat-label>
+          <mat-icon>search</mat-icon>
+          Search via Email
+        </mat-label>
+        <input [formControl]="searchInput" matInput type="text">
+      </mat-form-field>
+    </div>
+  </mat-tab>
+  <mat-tab label="User History">
+    <app-tabs></app-tabs>
+  </mat-tab>
+</mat-tab-group>
+
+<app-add-user (newUserEvent)="storeAddedUser($event)"></app-add-user>

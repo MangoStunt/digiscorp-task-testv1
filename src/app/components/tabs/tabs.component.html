@@ -1,0 +1,74 @@
+<div class="tabs_wrapper">
+  <div class="user-info_wrapper">
+    <mat-form-field class="tab-selector" appearance="fill">
+      <mat-label>User Tab</mat-label>
+      <mat-select [formControl]="tabSelectControl">
+        <ng-container *ngIf="!usersListIndexes.length && !usersListIds.length">
+          <mat-option>No options</mat-option>
+        </ng-container>
+
+        <ng-container *ngIf="usersListIndexes.length && usersListIds.length">
+          <mat-optgroup label="Index">
+            <mat-option *ngFor="let index of usersListIndexes" [value]="index">
+              {{index}}
+            </mat-option>
+          </mat-optgroup>
+          <mat-optgroup label="ID">
+            <mat-option *ngFor="let id of usersListIds" [value]="id">
+              {{id}}
+            </mat-option>
+          </mat-optgroup>
+        </ng-container>
+      </mat-select>
+    </mat-form-field>
+
+    <ng-container *ngIf="selectedUsers.size else noChosenUser">
+      <app-tab *ngFor="let user of selectedUsers">
+        <mat-card (click)="deselectUser(user)">
+          <mat-card-header>
+            <mat-card-title>
+              {{user.name}}
+            </mat-card-title>
+            <mat-card-subtitle>
+              Kyiv City, Ukraine
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div>
+              <div>User email address:</div>
+              {{user.name}}
+            </div>
+            <div>
+              <div>User joining date:</div>
+              {{user.dateOfAdding}}
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </app-tab>
+    </ng-container>
+  </div>
+
+  <div class="history_wrapper">
+    <mat-list *ngIf="usersList.length else noUsers">
+      <mat-card *ngFor="let user of usersList">
+        <mat-card-content>
+          <p>User {{user.name}} added on {{user.dateOfAdding | date: 'medium'}} with email address: {{user.email}}</p>
+        </mat-card-content>
+      </mat-card>
+    </mat-list>
+  </div>
+</div>
+
+<ng-template #noUsers>
+  <div class="empty-list_message-vertical">
+    <mat-icon>mood_bad</mat-icon>
+    <b>No users have been added yet</b>
+  </div>
+</ng-template>
+
+<ng-template #noChosenUser>
+  <div class="empty-list_message-vertical">
+    <mat-icon>mood_bad</mat-icon>
+    <b>No user have been chosen yet</b>
+  </div>
+</ng-template>

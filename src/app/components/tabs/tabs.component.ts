@@ -1,9 +1,12 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {distinctUntilChanged, filter, tap} from "rxjs";
+import {Component, OnInit} from '@angular/core';
+import {FormControl} from "@angular/forms";
+import {Store} from "@ngrx/store";
+
+import {UserTabInterface} from "../../interfaces/tabs.interface";
 import {UserInterface} from "../../interfaces/user.interface";
 import {selectUsers} from "../../store/user.selector";
-import {Store} from "@ngrx/store";
-import {distinctUntilChanged, tap} from "rxjs";
-import {FormControl} from "@angular/forms";
+
 
 @Component({
   selector: 'app-tabs',
@@ -11,34 +14,35 @@ import {FormControl} from "@angular/forms";
   styleUrls: ['./tabs.component.scss']
 })
 export class TabsComponent implements OnInit {
-  public usersList!: UserInterface[];
-  public usersListIndexes: string[] = [];
-  public usersListIds: string[] = [];
-  public selectedUsers: Set<UserInterface> = new Set;
+  public usersTabList: Map<number, UserInterface> = new Map<number, UserInterface>;
+  public selectedTabs: Set<UserTabInterface> = new Set<UserTabInterface>;
   public tabSelectControl: FormControl = new FormControl('');
-  constructor(private store: Store<{ usersList: UserInterface[] }>) { }
+  public usersTabIndexes: number[] = [];
+
+  constructor(private store: Store<{ usersList: UserInterface[] }>) {
+  }
 
   ngOnInit(): void {
     this.selectUsersList()
       .pipe(
-        tap((usersList: UserInterface[]) => {
-          this.usersList = [...usersList]
-
-          usersList.forEach(user => {
-            this.usersListIndexes.push(user.name);
-            this.usersListIds.push(this.makeIdFromDate(user.dateOfAdding));
-          })
-        })
-      ).subscribe()
+        tap((usersList: UserInterface[]) =>
+          usersList.forEach((user, index) => {
+              index += 1
+              this.usersTabList.set(index, user)
+              this.usersTabIndexes.push(index);
+              this.usersTabIndexes = [...new Set(this.usersTabIndexes)];
+            }
+          )))
+      .subscribe()
 
     this.tabSelectControl.valueChanges
-      .pipe(distinctUntilChanged())
+      .pipe(
+        distinctUntilChanged(),
+        filter(val => val)
+      )
       .subscribe(controlVal => {
-        this.usersList.forEach(user => {
-          if (this.makeIdFromDate(user.dateOfAdding) === controlVal || user.name === controlVal) {
-            this.selectUser(user)
-          }
-        })
+        this.selectTab(controlVal);
+        this.usersTabIndexes = this.usersTabIndexes.filter(index => index != controlVal);
       })
   }
 
@@ -46,20 +50,14 @@ export class TabsComponent implements OnInit {
     return this.store.select(selectUsers)
   }
 
-  makeIdFromDate(date: Date): string {
-    return String(date.valueOf()).replace(/([:.-])\w/g, '')
+  selectTab(index: number) {
+    this.selectedTabs.add({index, userInfo: this.usersTabList.get(index)})
   }
 
-
-  selectUser(user: UserInterface) {
-    this.selectedUsers.add(user)
-    this.usersListIds = this.usersListIds.filter(id => id != this.makeIdFromDate(user.dateOfAdding))
-    this.usersListIndexes = this.usersListIndexes.filter(index => index != user.name)
-  }
-
-  deselectUser(user: UserInterface) {
-    this.selectedUsers.delete(user);
-    this.usersListIds.push(this.makeIdFromDate(user.dateOfAdding));
-    this.usersListIndexes.push(user.name);
+  deselectTab(userTab: UserTabInterface) {
+    this.selectedTabs.delete(userTab);
+    this.usersTabIndexes.push(userTab.index);
+    //Need to make this one hack to prevent unexpected behavior
+    this.tabSelectControl.setValue('');
   }
 }

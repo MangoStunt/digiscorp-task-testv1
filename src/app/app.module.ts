@@ -1,28 +1,29 @@
-import {NgModule} from '@angular/core';
-import {BrowserModule} from '@angular/platform-browser';
-
-import {AppComponent} from './app.component';
-import {AddUserComponent} from './components/add-user/add-user.component';
-import {UserListComponent} from './components/user-list/user-list.component';
-import {TabsComponent} from './components/tabs/tabs.component';
-import {StoreModule} from '@ngrx/store';
-import {userReducer} from "./store/user.reducer";
-import {AddUserDialogComponent} from './components/add-user-dialog/add-user-dialog.component';
-import {MatIconModule} from "@angular/material/icon";
-import {MatDialogModule} from "@angular/material/dialog";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {MatButtonModule} from "@angular/material/button";
-import {MatInputModule} from "@angular/material/input";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {MatFormFieldModule} from "@angular/material/form-field";
 import {StoreDevtoolsModule} from '@ngrx/store-devtools';
-import {environment} from '../environments/environment';
-import {CookieModule} from "ngx-cookie";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatSelectModule} from "@angular/material/select";
+import {MatButtonModule} from "@angular/material/button";
+import {BrowserModule} from '@angular/platform-browser';
+import {MatInputModule} from "@angular/material/input";
+import {MatIconModule} from "@angular/material/icon";
 import {MatTabsModule} from "@angular/material/tabs";
 import {MatListModule} from "@angular/material/list";
 import {MatCardModule} from "@angular/material/card";
+import {StoreModule} from '@ngrx/store';
+import {NgModule} from '@angular/core';
+
+import {AddUserDialogComponent} from './components/dialogs/add-user-dialog/add-user-dialog.component';
+import {BasicDialogComponent} from './components/dialogs/basic-dialog/basic-dialog.component';
+import {UserListComponent} from './components/user-list/user-list.component';
+import {AddUserComponent} from './components/add-user/add-user.component';
+import {TabsComponent} from './components/tabs/tabs.component';
 import {TabComponent} from './components/tab/tab.component';
-import {MatSelectModule} from "@angular/material/select";
+import {environment} from '../environments/environment';
+import {userReducer} from "./store/user.reducer";
+import {AppComponent} from './app.component';
+
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {MatSelectModule} from "@angular/material/select";
     UserListComponent,
     TabsComponent,
     AddUserDialogComponent,
-    TabComponent
+    TabComponent,
+    BasicDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -42,8 +44,7 @@ import {MatSelectModule} from "@angular/material/select";
     ReactiveFormsModule,
     MatButtonModule,
     MatInputModule,
-    CookieModule.withOptions({expires: new Date(Date.now() + 1000000000 * 100000000)}),
-    StoreModule.forRoot({users: userReducer}, {}),
+    StoreModule.forRoot({users: userReducer}),
     StoreDevtoolsModule.instrument({maxAge: 25, logOnly: environment.production}),
     MatTabsModule,
     MatListModule,
@@ -54,5 +55,4 @@ import {MatSelectModule} from "@angular/material/select";
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

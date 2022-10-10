@@ -1,58 +1,72 @@
 <div class="tabs_wrapper">
   <div class="user-info_wrapper">
-    <mat-form-field class="tab-selector" appearance="fill">
-      <mat-label>User Tab</mat-label>
-      <mat-select [formControl]="tabSelectControl">
-        <ng-container *ngIf="!usersListIndexes.length && !usersListIds.length">
-          <mat-option>No options</mat-option>
-        </ng-container>
+    <div class="selector_wrapper">
+      <mat-form-field appearance="fill" class="tab-selector">
+        <mat-label>Select Tab</mat-label>
+        <mat-select [formControl]="tabSelectControl">
+          <ng-container *ngIf="!usersTabIndexes.length">
+            <mat-option>No tabs</mat-option>
+          </ng-container>
 
-        <ng-container *ngIf="usersListIndexes.length && usersListIds.length">
-          <mat-optgroup label="Index">
-            <mat-option *ngFor="let index of usersListIndexes" [value]="index">
-              {{index}}
-            </mat-option>
-          </mat-optgroup>
-          <mat-optgroup label="ID">
-            <mat-option *ngFor="let id of usersListIds" [value]="id">
-              {{id}}
-            </mat-option>
-          </mat-optgroup>
-        </ng-container>
-      </mat-select>
-    </mat-form-field>
+          <ng-container *ngIf="usersTabIndexes.length">
+            <mat-optgroup label="Index">
+              <mat-option *ngFor="let index of usersTabIndexes" [value]="index">
+                Tab index: {{index}}
+              </mat-option>
+            </mat-optgroup>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-    <ng-container *ngIf="selectedUsers.size else noChosenUser">
-      <app-tab *ngFor="let user of selectedUsers">
-        <mat-card (click)="deselectUser(user)">
-          <mat-card-header>
-            <mat-card-title>
-              {{user.name}}
-            </mat-card-title>
-            <mat-card-subtitle>
-              Kyiv City, Ukraine
-            </mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
+    <div class="selected-tabs">
+    <ng-container *ngIf="selectedTabs.size else noChosenUser">
+      <app-tab *ngFor="let userTab of selectedTabs">
+          <div class="tab-title" tabTitle>
+            <div>Tab index: {{userTab.index}}</div>
             <div>
-              <div>User email address:</div>
-              {{user.name}}
+              <mat-icon (click)="deselectTab(userTab)">close</mat-icon>
             </div>
-            <div>
-              <div>User joining date:</div>
-              {{user.dateOfAdding}}
-            </div>
-          </mat-card-content>
-        </mat-card>
+          </div>
+          <div class="tab-content" tabContent>
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>
+                  {{userTab.userInfo?.name}}
+                </mat-card-title>
+                <mat-card-subtitle>
+                  Kyiv City, Ukraine
+                </mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                <div>
+                  <div>User email address:</div>
+                  {{userTab.userInfo?.email}}
+                </div>
+                <div>
+                  <div>User joining date:</div>
+                  {{userTab.userInfo?.dateOfAdding}}
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
       </app-tab>
     </ng-container>
+    </div>
   </div>
 
   <div class="history_wrapper">
-    <mat-list *ngIf="usersList.length else noUsers">
-      <mat-card *ngFor="let user of usersList">
+    <mat-list *ngIf="usersTabList else noUsers">
+      <mat-card *ngFor="let userTab of usersTabList | keyvalue">
+        <mat-card-header>
+          Index: {{userTab.key}}
+        </mat-card-header>
         <mat-card-content>
-          <p>User {{user.name}} added on {{user.dateOfAdding | date: 'medium'}} with email address: {{user.email}}</p>
+          <p>
+            User {{userTab.value?.name}} added on
+            {{userTab.value?.dateOfAdding | date: 'medium'}}
+            with email address: {{userTab.value?.email}}
+          </p>
         </mat-card-content>
       </mat-card>
     </mat-list>

@@ -1,0 +1,12 @@
+.tab_wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  flex-direction: column;
+
+  margin: 10px 20px;
+
+  background: white;
+  box-shadow: 0 5px 10px 0 #333333;
+  border-radius: 5px;
+}

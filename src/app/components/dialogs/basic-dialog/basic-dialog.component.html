@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div class="mat-content" mat-dialog-content>
+  <ng-container *ngIf="data.contentTemplate else plainText">
+    <ng-template [ngTemplateOutletContext]="{$implicit: data.templateContext}"
+                 [ngTemplateOutlet]="data.contentTemplate">
+    </ng-template>
+  </ng-container>
+</div>
+<div mat-dialog-actions>
+  <button [mat-dialog-close] mat-button>Close</button>
+</div>
+
+<ng-template #plainText>
+  <p>{{data.contentText}}</p>
+</ng-template>

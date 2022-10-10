@@ -1,6 +1,6 @@
 import {createReducer, on} from "@ngrx/store";
-import {addUsers, getUsers} from "./user.action";
 import {StoreInterface} from "../interfaces/store.interface";
+import {addUsers, getUsers} from "./user.action";
 
 export const UserStoreState: StoreInterface = {
   usersList: []

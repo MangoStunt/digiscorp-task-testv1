@@ -1,8 +1,12 @@
-import {Component, EventEmitter, Output} from '@angular/core';
 import {MatDialog} from "@angular/material/dialog";
-import {AddUserDialogComponent} from "../add-user-dialog/add-user-dialog.component";
-import {UserInterface} from "../../interfaces/user.interface";
+import {Component} from '@angular/core';
+import {Store} from "@ngrx/store";
 import {filter} from "rxjs";
+
+import {AddUserDialogComponent} from "../dialogs/add-user-dialog/add-user-dialog.component";
+import {UserInterface} from "../../interfaces/user.interface";
+import {addUsers} from "../../store/user.action";
+
 
 @Component({
   selector: 'app-add-user',
@@ -10,20 +14,26 @@ import {filter} from "rxjs";
   styleUrls: ['./add-user.component.scss']
 })
 export class AddUserComponent {
-  @Output() newUserEvent = new EventEmitter<UserInterface>()
 
-  constructor(private dialog: MatDialog) { }
+  constructor(
+    private dialog: MatDialog,
+    private store: Store<{ usersList: UserInterface[] }>
+  ) {}
 
   openAddUserDialog() {
     const dialogRef = this.dialog.open(AddUserDialogComponent, {
       width: '400px',
       height: '400px'
-    })
+    });
 
     dialogRef.afterClosed()
       .pipe(filter(val => val))
-      .subscribe(user => {
-        this.newUserEvent.emit(user);
-      })
+      .subscribe(user =>
+        this.store.dispatch(
+          addUsers({
+            usersList: [{...user, dateOfAdding: new Date()}]
+          })
+        )
+      );
   }
 }
